@@ -1,0 +1,73 @@
+.toolbox-panel {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  background: #fff;
+}
+
+.toolbox-content {
+  flex: 1;
+  padding: 18px 22px 16px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.upload-section {
+  background: white;
+  border-radius: 12px;
+  padding: 20px;
+  border: 1px solid rgba(0, 0, 0, 0.06);
+}
+
+.upload-icon {
+  font-size: 48px;
+  margin-bottom: 16px;
+}
+
+.upload-text {
+  font-size: 16px;
+  color: #333;
+  margin-bottom: 8px;
+}
+
+.upload-hint {
+  font-size: 14px;
+  color: #999;
+}
+
+.file-list-section {
+  flex: 1;
+  background: white;
+  border-radius: 12px;
+  padding: 20px;
+  border: 1px solid rgba(0, 0, 0, 0.06);
+  overflow-y: auto;
+  min-height: 0;
+}
+
+.uploader {
+  width: 100%;
+  display: block;
+}
+
+.uploader:deep(.ant-upload-wrapper) {
+  width: 100%;
+  display: block;
+}
+
+.uploader:deep(.ant-upload) {
+  width: 100%;
+  display: block;
+}
+
+.uploader:deep(.ant-upload-drag) {
+  width: 100%;
+  display: block;
+  box-sizing: border-box;
+  margin: 0;
+  min-height: 180px;    
+  border-radius: 12px;
+}

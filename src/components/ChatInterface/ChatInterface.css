@@ -1,0 +1,267 @@
+.chat-interface {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  background: #fff;
+}
+
+/* 左侧 */
+.left {
+  width: 260px;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  overflow: auto;
+  padding: 0;
+}
+
+.left-top {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  background: #fff;
+  padding: 18px 14px 12px;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+}
+
+.left-list {
+  padding: 10px 10px 14px;
+  flex: 1;
+  min-height: 0;
+}
+
+.left-title {
+  margin-top: 14px;
+  font-size: 14px;
+  font-weight: 600;
+  color: rgba(0, 0, 0, 0.35);
+}
+
+.left-empty {
+  padding: 12px 6px;
+}
+
+/* logo */
+.left-brand {
+  height: 34px;
+  display: flex;
+  align-items: center;
+  margin-bottom: 8px;
+}
+.logo {
+  height: 22px;
+  width: auto;
+  display: block;
+}
+
+.left-actions-vertical {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 6px;
+}
+
+.top-btn {
+  height: 34px;
+  border-radius: 10px;
+  padding: 0 8px;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  justify-content: flex-start;
+}
+
+/* menu */
+.chat-menu {
+  border-right: 0;
+  background: transparent;
+}
+.chat-menu :deep(.ant-menu-item) {
+  border-radius: 10px;
+  height: 38px;
+  line-height: 38px;
+  margin: 6px 0;
+}
+.chat-menu :deep(.ant-menu-item-selected) {
+  background: rgba(0, 0, 0, 0.08) !important;
+  font-weight: 600;
+}
+
+/* 竖分割线 */
+.v-divider {
+  height: 100%;
+  margin: 0;
+}
+
+/* 右侧 */
+.right {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.chat-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  padding: 18px 22px 16px;
+  overflow: hidden;
+}
+
+.right-content {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow: auto;
+  overscroll-behavior: contain;
+}
+
+/* 空状态 */
+.empty {
+  height: 100%;
+  display: grid;
+  place-items: center;
+  align-content: center;
+  gap: 18px;
+  padding: 18px 0;
+}
+
+.welcome {
+  width: min(920px, 92vw);
+  text-align: center;
+}
+
+.ask-area {
+  width: min(920px, 92vw);
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.bottom-ask-area {
+  margin: 0 auto;
+}
+
+.askbar {
+  width: 100%;
+  height: 56px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  z-index: 5;
+  background: #fff;
+  border: 1px solid rgba(0, 0, 0, 0.12);
+  border-radius: 999px;
+  cursor: text;
+  padding: 0 18px;
+  box-sizing: border-box;
+  position: relative;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.06);
+}
+
+.askbar:focus-within {
+  border-color: rgba(0, 0, 0, 0.22);
+}
+
+.askbar-input {
+  flex: 1;
+  font-size: 15px;
+}
+
+.askbar :deep(.ant-input) {
+  font-size: 15px;
+  line-height: 1;
+}
+
+/* 示例 */
+.examples {
+  width: 100%;
+  text-align: center;
+}
+.examples-title {
+  display: inline-block;
+  margin-bottom: 8px;
+}
+.examples-row {
+  justify-content: center;
+}
+.chip {
+  cursor: pointer;
+  user-select: none;
+  border-radius: 999px;
+  padding: 6px 10px;
+  border: 1px solid rgba(0, 0, 0, 0.14);
+  background: rgba(0, 0, 0, 0.02);
+  transition: all 0.15s ease;
+}
+.chip:hover {
+  background: rgba(0, 0, 0, 0.04);
+  border-color: rgba(0, 0, 0, 0.22);
+}
+
+/* 消息区 */
+.msg-wrap {
+  padding: 6px 4px 0;
+}
+.msg-list-antd :deep(.ant-list-item) {
+  border-bottom: 0;
+  padding: 6px 0;
+}
+.msg-row {
+  display: flex;
+  width: 100%;
+}
+.msg-item.user .msg-row {
+  justify-content: flex-end;
+}
+.msg-item.bot .msg-row {
+  justify-content: flex-start;
+}
+.bubble-card {
+  max-width: min(680px, 70%);
+  border-radius: 14px;
+}
+.msg-item.user .bubble-card {
+  background: rgba(22, 119, 255, 0.12);
+  border-color: rgba(22, 119, 255, 0.25);
+}
+.msg-item.bot .bubble-card {
+  background: rgba(0, 0, 0, 0.03);
+  border-color: rgba(0, 0, 0, 0.18);
+}
+
+/* 底部输入区 */
+.right-inputbar {
+  flex: 0 0 auto;
+  padding-top: 14px;
+  padding-bottom: 6px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.bottom-hint {
+  margin-top: 8px;
+  text-align: center;
+}
+
+/* 左侧滚动条 */
+.left {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(0, 0, 0, 0.15) transparent;
+}
+.left::-webkit-scrollbar {
+  width: 8px;
+}
+.left::-webkit-scrollbar-track {
+  background: transparent;
+}
+.left::-webkit-scrollbar-thumb {
+  background: rgba(0, 0, 0, 0.15);
+  border-radius: 999px;
+  border: 2px solid transparent;
+  background-clip: content-box;
+}
+.left::-webkit-scrollbar-thumb:hover {
+  background: rgba(0, 0, 0, 0.22);
+}
