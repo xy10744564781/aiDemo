@@ -121,18 +121,25 @@
                     
                     <!-- AI 消息：无卡片，直接显示内容 -->
                     <div v-else-if="item.role === 'bot'" class="bot-message-content">
-                      <!-- AI 消息：Markdown 渲染 -->
-                      <div 
-                        v-if="!item.loading" 
-                        class="markdown-content"
-                        v-html="renderMarkdown(item.text)"
-                      ></div>
-                      
-                      <!-- 加载状态 -->
-                      <div v-else class="typing-indicator">
+                      <!-- 初始加载状态（还没收到任何内容） -->
+                      <div v-if="item.loading && !item.text" class="typing-indicator">
                         <a-spin size="small" />
                         <span style="margin-left: 8px;">正在思考...</span>
                       </div>
+                      
+                      <!-- 流式传输中：显示纯文本（已经有内容但还在加载） -->
+                      <div 
+                        v-else-if="item.loading && item.text" 
+                        class="markdown-content streaming-text"
+                        style="white-space: pre-wrap;"
+                      >{{ item.text }}</div>
+                      
+                      <!-- 传输完成：Markdown 渲染 -->
+                      <div 
+                        v-else-if="!item.loading && item.text" 
+                        class="markdown-content"
+                        v-html="renderMarkdown(item.text)"
+                      ></div>
                     </div>
                   </div>
                 </a-list-item>

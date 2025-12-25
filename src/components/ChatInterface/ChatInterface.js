@@ -144,7 +144,10 @@ export function useChatInterface(emit) {
       await queryStream(text, undefined, {
         onContent: (content) => {
           aiMessage.text = content;
+          // 强制触发响应式更新
           messages.value = [...chat.messages];
+          // 使用 nextTick 确保 DOM 立即更新
+          nextTick();
         },
         onComplete: async () => {
           aiMessage.loading = false;

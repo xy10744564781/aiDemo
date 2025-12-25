@@ -53,6 +53,10 @@ export async function queryStream(question, userCtx = DEFAULT_USER_CTX, callback
               }
               fullAnswer += content;
               
+              // 调试日志
+              console.log('[Stream] Received chunk:', content.substring(0, 50), '... length:', content.length);
+              console.log('[Stream] Full answer length:', fullAnswer.length);
+              
               // 调用内容回调
               if (onContent) {
                 onContent(fullAnswer);
