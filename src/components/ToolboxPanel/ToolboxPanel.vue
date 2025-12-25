@@ -10,7 +10,7 @@
           v-model:fileList="fileList"
           name="file"
           :multiple="true"
-          action="/api/upload-document"
+          :customRequest="customRequest"
           @change="handleUploadChange"
           accept=".pdf,.docx,.doc,.txt,.md"
         >
@@ -72,6 +72,7 @@ const {
   documentList,
   loading,
   handleUploadChange,
+  customRequest,
   handleDelete,
   formatDate
 } = useToolboxPanel();

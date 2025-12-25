@@ -15,7 +15,7 @@
 
           <a-button type="text" class="top-btn" @click="$emit('toggle-toolbox')">
             <AppstoreOutlined />
-            <span>工具箱</span>
+            <span>知识库</span>
           </a-button>
         </a-space>
 
@@ -24,7 +24,12 @@
 
       <!-- Chat list -->
       <div class="left-list">
+        <a-spin v-if="isLoading" :spinning="isLoading" style="display: flex; justify-content: center; padding: 20px;">
+          <span>加载中...</span>
+        </a-spin>
+        
         <a-menu
+          v-else
           mode="inline"
           :selectedKeys="[String(activeIdx)]"
           @click="({ key }) => selectChat(Number(key))"
@@ -35,7 +40,7 @@
           </a-menu-item>
         </a-menu>
 
-        <div v-if="chats.length === 0" class="left-empty">
+        <div v-if="!isLoading && chats.length === 0" class="left-empty">
           <a-typography-text type="secondary">暂无聊天，点击「新聊天」开始</a-typography-text>
         </div>
       </div>
@@ -48,6 +53,19 @@
     <main class="right">
       <!-- 聊天内容 -->
       <div v-if="!showToolbox" class="chat-content">
+        <!-- 顶部操作栏 -->
+        <div v-if="messages.length > 0" class="chat-header">
+          <a-button 
+            type="text" 
+            class="export-btn"
+            @click="exportCurrentSession"
+            :title="'导出聊天记录'"
+          >
+            <ExportOutlined />
+            <span>导出</span>
+          </a-button>
+        </div>
+
         <div class="right-content">
           <!-- Empty state -->
           <div v-if="messages.length === 0" class="empty">
@@ -94,11 +112,28 @@
               <template #renderItem="{ item }">
                 <a-list-item class="msg-item" :class="item.role">
                   <div class="msg-row" :class="item.role">
-                    <a-card size="small" class="bubble-card" :bordered="true">
-                      <a-typography-text style="white-space: pre-wrap;">
+                    <!-- 用户消息：保持卡片样式 -->
+                    <a-card v-if="item.role === 'user'" size="small" class="bubble-card" :bordered="true">
+                      <a-typography-text v-if="!item.loading" style="white-space: pre-wrap;">
                         {{ item.text }}
                       </a-typography-text>
                     </a-card>
+                    
+                    <!-- AI 消息：无卡片，直接显示内容 -->
+                    <div v-else-if="item.role === 'bot'" class="bot-message-content">
+                      <!-- AI 消息：Markdown 渲染 -->
+                      <div 
+                        v-if="!item.loading" 
+                        class="markdown-content"
+                        v-html="renderMarkdown(item.text)"
+                      ></div>
+                      
+                      <!-- 加载状态 -->
+                      <div v-else class="typing-indicator">
+                        <a-spin size="small" />
+                        <span style="margin-left: 8px;">正在思考...</span>
+                      </div>
+                    </div>
                   </div>
                 </a-list-item>
               </template>
@@ -114,6 +149,7 @@
                 ref="inputRef"
                 v-model:value="query"
                 :bordered="false"
+                :disabled="isQuerying"
                 class="askbar-input"
                 placeholder="询问任何问题"
                 @keydown.enter.prevent="send"
@@ -122,7 +158,9 @@
           </div>
 
           <div class="bottom-hint">
-            <a-typography-text type="secondary">回车发送</a-typography-text>
+            <a-typography-text type="secondary">
+              {{ isQuerying ? '正在查询中...' : '回车发送' }}
+            </a-typography-text>
           </div>
         </div>
       </div>
@@ -135,7 +173,9 @@
 
 <script setup>
 import { useChatInterface } from './ChatInterface.js';
+import { renderMarkdown } from '@/utils/markdown';
 import './ChatInterface.css';
+import './MarkdownContent.css';
 
 defineProps({
   showToolbox: {
@@ -149,16 +189,20 @@ const emit = defineEmits(['toggle-toolbox', 'switch-to-chat']);
 const {
   PlusOutlined,
   AppstoreOutlined,
+  ExportOutlined,
   ToolboxPanel,
   inputRef,
   chats,
   activeIdx,
   query,
   messages,
+  isQuerying,
+  isLoading,
   focusInput,
   useExample,
   selectChat,
   onNewChat,
-  send
+  send,
+  exportCurrentSession
 } = useChatInterface(emit);
 </script>

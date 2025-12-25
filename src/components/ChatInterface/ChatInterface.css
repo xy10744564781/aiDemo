@@ -105,8 +105,33 @@
   flex: 1;
   display: flex;
   flex-direction: column;
-  padding: 18px 22px 16px;
+  padding: 18px 32px 16px 22px;  /* 右侧增加内边距 */
   overflow: hidden;
+}
+
+/* 聊天顶部操作栏 */
+.chat-header {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  padding: 0 0 12px 0;
+  border-bottom: 1px solid #f0f0f0;
+  margin-bottom: 12px;
+}
+
+.export-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  height: 32px;
+  padding: 0 12px;
+  border-radius: 6px;
+  transition: all 0.2s;
+}
+
+.export-btn:hover {
+  background: rgba(0, 0, 0, 0.04);
+  color: #1890ff;
 }
 
 .right-content {
@@ -217,6 +242,8 @@
 .msg-item.bot .msg-row {
   justify-content: flex-start;
 }
+
+/* 用户消息卡片样式 */
 .bubble-card {
   max-width: min(680px, 70%);
   border-radius: 14px;
@@ -225,9 +252,21 @@
   background: rgba(22, 119, 255, 0.12);
   border-color: rgba(22, 119, 255, 0.25);
 }
-.msg-item.bot .bubble-card {
-  background: rgba(0, 0, 0, 0.03);
-  border-color: rgba(0, 0, 0, 0.18);
+
+/* AI 消息内容样式 - 无边框，居中显示 */
+.bot-message-content {
+  width: 85%;
+  max-width: 850px;
+  margin: 0 auto;  /* 居中 */
+  padding: 16px 0;
+  background: transparent;
+}
+
+/* AI 加载状态 */
+.bot-message-content .typing-indicator {
+  display: flex;
+  align-items: center;
+  color: rgba(0, 0, 0, 0.65);
 }
 
 /* 底部输入区 */
