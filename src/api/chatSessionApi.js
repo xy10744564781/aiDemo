@@ -218,13 +218,25 @@ export async function exportChatSession(sessionId) {
 
     // 获取文件名
     const contentDisposition = response.headers.get('Content-Disposition');
+    console.log('Content-Disposition header:', contentDisposition);
     let filename = 'chat_export.md';
     if (contentDisposition) {
-      const matches = /filename="([^"]+)"/.exec(contentDisposition);
-      if (matches && matches[1]) {
-        filename = matches[1];
+      // 尝试解析 RFC 5987 格式: filename*=UTF-8''encoded_filename
+      const rfc5987Match = /filename\*=UTF-8''(.+)/.exec(contentDisposition);
+      console.log('RFC 5987 match:', rfc5987Match);
+      if (rfc5987Match && rfc5987Match[1]) {
+        filename = decodeURIComponent(rfc5987Match[1]);
+        console.log('Decoded filename:', filename);
+      } else {
+        // 尝试解析标准格式: filename="filename"
+        const standardMatch = /filename="([^"]+)"/.exec(contentDisposition);
+        console.log('Standard match:', standardMatch);
+        if (standardMatch && standardMatch[1]) {
+          filename = standardMatch[1];
+        }
       }
     }
+    console.log('Final filename:', filename);
 
     // 获取文件内容
     const blob = await response.blob();
