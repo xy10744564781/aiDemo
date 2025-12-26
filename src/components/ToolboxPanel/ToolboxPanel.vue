@@ -47,7 +47,7 @@
                 </template>
                 <template #description>
                   <a-space>
-                    <a-tag>{{ item.category }}</a-tag>
+                    <!-- <a-tag>{{ item.category }}</a-tag> -->
                     <span style="color: #999; font-size: 12px;">
                       {{ formatDate(item.upload_time) }}
                     </span>

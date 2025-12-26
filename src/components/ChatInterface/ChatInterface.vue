@@ -127,17 +127,11 @@
                         <span style="margin-left: 8px;">正在思考...</span>
                       </div>
                       
-                      <!-- 流式传输中：显示纯文本（已经有内容但还在加载） -->
+                      <!-- 流式传输中和传输完成：都使用Markdown渲染 -->
                       <div 
-                        v-else-if="item.loading && item.text" 
-                        class="markdown-content streaming-text"
-                        style="white-space: pre-wrap;"
-                      >{{ item.text }}</div>
-                      
-                      <!-- 传输完成：Markdown 渲染 -->
-                      <div 
-                        v-else-if="!item.loading && item.text" 
+                        v-else-if="item.text" 
                         class="markdown-content"
+                        :class="{ 'streaming-text': item.loading }"
                         v-html="renderMarkdown(item.text)"
                       ></div>
                     </div>
