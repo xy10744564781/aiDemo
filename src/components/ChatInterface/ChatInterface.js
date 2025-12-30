@@ -140,8 +140,8 @@ export function useChatInterface(emit) {
     isQuerying.value = true;
 
     try {
-      // 调用流式API
-      await queryStream(text, undefined, {
+      // 调用流式API（dev-mix：传递 sessionId 以支持对话历史）
+      await queryStream(text, sessionId, {
         onContent: (content) => {
           aiMessage.text = content;
           // 强制触发响应式更新

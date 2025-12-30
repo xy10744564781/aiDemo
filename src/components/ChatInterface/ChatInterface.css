@@ -269,6 +269,86 @@
   color: rgba(0, 0, 0, 0.65);
 }
 
+/* 思考过程折叠组件样式 */
+.thinking-collapse {
+  margin-bottom: 16px;
+  background: transparent;
+  border-radius: 0;
+  overflow: visible;
+}
+
+.thinking-collapse :deep(.ant-collapse-item) {
+  border-bottom: none;
+  background: transparent;
+}
+
+.thinking-collapse :deep(.ant-collapse-header) {
+  padding: 8px 0;
+  padding-right: 24px;
+  background: transparent;
+  color: rgba(0, 0, 0, 0.45);
+  font-size: 13px;
+  font-weight: 400;
+  border-radius: 0;
+  transition: all 0.3s;
+  position: relative;
+}
+
+.thinking-collapse :deep(.ant-collapse-header:hover) {
+  background: transparent;
+  color: rgba(0, 0, 0, 0.65);
+}
+
+/* 自定义header文本样式 */
+.thinking-header-text {
+  display: inline-block;
+}
+
+/* 箭头图标位置调整 - 放到最右边 */
+.thinking-collapse :deep(.ant-collapse-expand-icon) {
+  position: absolute !important;
+  right: 0 !important;
+  left: auto !important;
+  top: 50% !important;
+  transform: translateY(-50%) !important;
+  padding-left: 0 !important;
+  margin: 0 !important;
+}
+
+.thinking-collapse :deep(.ant-collapse-content) {
+  background: #fafbfc;
+  border-top: 1px solid #e8eaed;
+  border-radius: 6px;
+  margin-top: 8px;
+}
+
+.thinking-collapse :deep(.ant-collapse-content-box) {
+  padding: 16px;
+}
+
+/* 思考内容样式 */
+.thinking-content {
+  font-size: 13px;
+  color: rgba(0, 0, 0, 0.65);
+  line-height: 1.7;
+}
+
+.thinking-content h1,
+.thinking-content h2,
+.thinking-content h3,
+.thinking-content h4 {
+  font-size: 14px;
+  font-weight: 600;
+  color: rgba(0, 0, 0, 0.75);
+  margin-top: 0.8em;
+  margin-bottom: 0.5em;
+}
+
+/* 主要回答内容样式 */
+.main-answer-content {
+  /* 继承 markdown-content 的样式 */
+}
+
 /* 流式渲染样式 - 添加光标动画 */
 .markdown-content.streaming-text {
   position: relative;

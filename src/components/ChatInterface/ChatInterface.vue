@@ -127,13 +127,32 @@
                         <span style="margin-left: 8px;">正在思考...</span>
                       </div>
                       
-                      <!-- 流式传输中和传输完成：都使用Markdown渲染 -->
-                      <div 
-                        v-else-if="item.text" 
-                        class="markdown-content"
-                        :class="{ 'streaming-text': item.loading }"
-                        v-html="renderMarkdown(item.text)"
-                      ></div>
+                      <!-- 流式传输中和传输完成：解析并渲染内容 -->
+                      <div v-else-if="item.text">
+                        <!-- 如果有思考过程，显示折叠组件 -->
+                        <a-collapse 
+                          v-if="parseMessage(item.text).hasThinkingProcess" 
+                          class="thinking-collapse"
+                          :bordered="false"
+                        >
+                          <a-collapse-panel key="1">
+                            <template #header>
+                              <span class="thinking-header-text">💭 查看推理过程</span>
+                            </template>
+                            <div 
+                              class="markdown-content thinking-content"
+                              v-html="renderMarkdown(parseMessage(item.text).thinkingProcess)"
+                            ></div>
+                          </a-collapse-panel>
+                        </a-collapse>
+                        
+                        <!-- 主要内容（详细解答） -->
+                        <div 
+                          class="markdown-content main-answer-content"
+                          :class="{ 'streaming-text': item.loading }"
+                          v-html="renderMarkdown(parseMessage(item.text).mainContent)"
+                        ></div>
+                      </div>
                     </div>
                   </div>
                 </a-list-item>
@@ -175,6 +194,7 @@
 <script setup>
 import { useChatInterface } from './ChatInterface.js';
 import { renderMarkdown } from '@/utils/markdown';
+import { parseAIResponse } from '@/utils/messageParser';
 import './ChatInterface.css';
 import './MarkdownContent.css';
 
@@ -206,4 +226,9 @@ const {
   send,
   exportCurrentSession
 } = useChatInterface(emit);
+
+// 解析消息内容
+function parseMessage(text) {
+  return parseAIResponse(text);
+}
 </script>

@@ -3,12 +3,13 @@ import { API_BASE_URL, API_ENDPOINTS, DEFAULT_USER_CTX } from './config';
 /**
  * 流式查询 API
  * @param {string} question - 用户问题
- * @param {object} userCtx - 用户上下文（可选）
- * @param {function} onContent - 内容回调函数
- * @param {function} onComplete - 完成回调函数
- * @param {function} onError - 错误回调函数
+ * @param {string} sessionId - 会话ID（dev-mix：支持对话历史）
+ * @param {object} callbacks - 回调函数对象
+ * @param {function} callbacks.onContent - 内容回调函数
+ * @param {function} callbacks.onComplete - 完成回调函数
+ * @param {function} callbacks.onError - 错误回调函数
  */
-export async function queryStream(question, userCtx = DEFAULT_USER_CTX, callbacks = {}) {
+export async function queryStream(question, sessionId, callbacks = {}) {
   const { onContent, onComplete, onError } = callbacks;
 
   try {
@@ -19,7 +20,8 @@ export async function queryStream(question, userCtx = DEFAULT_USER_CTX, callback
       },
       body: JSON.stringify({
         question,
-        user_ctx: userCtx
+        session_id: sessionId,
+        user_ctx: DEFAULT_USER_CTX
       })
     });
 
