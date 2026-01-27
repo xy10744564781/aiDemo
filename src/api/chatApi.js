@@ -1,4 +1,6 @@
-import { API_BASE_URL, API_ENDPOINTS, DEFAULT_USER_CTX } from './config';
+import { API_BASE_URL, API_ENDPOINTS } from './config';
+import { getAuthHeaders } from './authApi';
+import { fetchWithAuth } from '../utils/apiInterceptor';
 
 /**
  * 流式查询 API
@@ -10,18 +12,16 @@ import { API_BASE_URL, API_ENDPOINTS, DEFAULT_USER_CTX } from './config';
  * @param {function} callbacks.onError - 错误回调函数
  */
 export async function queryStream(question, sessionId, callbacks = {}) {
-  const { onContent, onComplete, onError } = callbacks;
+  const { onContent, onComplete, onError, onUserContext } = callbacks;
 
   try {
-    const response = await fetch(`${API_BASE_URL}${API_ENDPOINTS.QUERY_STREAM}`, {
+    const response = await fetchWithAuth(`${API_BASE_URL}${API_ENDPOINTS.QUERY_STREAM}`, {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
+      headers: getAuthHeaders(),
       body: JSON.stringify({
         question,
-        session_id: sessionId,
-        user_ctx: DEFAULT_USER_CTX
+        session_id: sessionId
+        // 注意：不需要传递user_ctx，后端会从JWT token中获取用户信息
       })
     });
 
@@ -47,7 +47,20 @@ export async function queryStream(question, sessionId, callbacks = {}) {
           try {
             const data = JSON.parse(line.substring(6));
             
-            if (data.type === 'content') {
+            console.log('[Stream] Received event:', data.type, data);
+            
+            if (data.type === 'start') {
+              // 开始处理
+              console.log('[Stream] Query started:', data.message);
+            } else if (data.type === 'user_context') {
+              // 用户上下文信息
+              if (onUserContext) {
+                onUserContext(data.data);
+              }
+            } else if (data.type === 'status') {
+              // 处理状态更新
+              console.log('[Stream] Status update:', data.stage, data.message, `${data.progress}%`);
+            } else if (data.type === 'content') {
               // 移除思考过程标签
               let content = data.content;
               if (content.includes('<thinking>')) {
@@ -65,9 +78,13 @@ export async function queryStream(question, sessionId, callbacks = {}) {
               }
             } else if (data.type === 'complete') {
               // 调用完成回调
+              console.log('[Stream] Query completed:', data);
               if (onComplete) {
-                onComplete(fullAnswer);
+                onComplete(fullAnswer, data);
               }
+            } else if (data.type === 'end') {
+              // 查询结束
+              console.log('[Stream] Query ended:', data.message);
             } else if (data.type === 'error') {
               throw new Error(data.message || '查询处理失败');
             }

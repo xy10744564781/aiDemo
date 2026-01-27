@@ -11,7 +11,7 @@
   height: 100%;
   display: flex;
   flex-direction: column;
-  overflow: auto;
+  overflow: hidden;  /* 改为 hidden，不让整个左侧滚动 */
   padding: 0;
 }
 
@@ -22,12 +22,14 @@
   background: #fff;
   padding: 18px 14px 12px;
   border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+  flex-shrink: 0;  /* 不允许收缩，保持固定高度 */
 }
 
 .left-list {
   padding: 10px 10px 14px;
-  flex: 1;
-  min-height: 0;
+  flex: 1;  /* 占据剩余空间 */
+  min-height: 0;  /* 允许收缩 */
+  overflow-y: auto;  /* 只有这部分可以滚动 */
 }
 
 .left-title {
@@ -105,7 +107,7 @@
   flex: 1;
   display: flex;
   flex-direction: column;
-  padding: 18px 32px 16px 22px;  /* 右侧增加内边距 */
+  padding: 18px 32px 32px 22px;  /* 底部增加到32px，避免输入框贴到页面底部 */
   overflow: hidden;
 }
 
@@ -226,7 +228,7 @@
 
 /* 消息区 */
 .msg-wrap {
-  padding: 6px 4px 0;
+  padding: 6px 4px 60px;  /* 底部增加padding，避免最后一条消息贴到输入框 */
 }
 .msg-list-antd :deep(.ant-list-item) {
   border-bottom: 0;
@@ -376,7 +378,7 @@
 .right-inputbar {
   flex: 0 0 auto;
   padding-top: 14px;
-  padding-bottom: 6px;
+  padding-bottom: 20px;  /* 增加底部间距，不要贴到页面底部 */
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -387,23 +389,51 @@
   text-align: center;
 }
 
-/* 左侧滚动条 */
-.left {
+/* 左侧聊天列表滚动条样式 */
+.left-list {
   scrollbar-width: thin;
   scrollbar-color: rgba(0, 0, 0, 0.15) transparent;
 }
-.left::-webkit-scrollbar {
+.left-list::-webkit-scrollbar {
   width: 8px;
 }
-.left::-webkit-scrollbar-track {
+.left-list::-webkit-scrollbar-track {
   background: transparent;
 }
-.left::-webkit-scrollbar-thumb {
+.left-list::-webkit-scrollbar-thumb {
   background: rgba(0, 0, 0, 0.15);
   border-radius: 999px;
   border: 2px solid transparent;
   background-clip: content-box;
 }
-.left::-webkit-scrollbar-thumb:hover {
+.left-list::-webkit-scrollbar-thumb:hover {
   background: rgba(0, 0, 0, 0.22);
+  background-clip: content-box;
+}
+
+/* 底部设置按钮 */
+.left-bottom {
+  padding: 0 14px 18px;
+  background: #fff;
+  flex-shrink: 0;  /* 不允许收缩，保持固定高度 */
+  border-top: 1px solid rgba(0, 0, 0, 0.06);  /* 添加顶部边框，与列表分隔 */
+}
+
+.settings-btn {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  padding: 10px 12px;
+  height: auto;
+  border-radius: 8px;
+  transition: all 0.2s;
+}
+
+.settings-btn:hover {
+  background: rgba(0, 0, 0, 0.04);
+}
+
+.settings-btn span {
+  margin-left: 8px;
 }

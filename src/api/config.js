@@ -4,7 +4,7 @@ export const API_BASE_URL = process.env.VUE_APP_API_BASE_URL || 'http://192.168.
 
 // 默认用户上下文
 export const DEFAULT_USER_CTX = {
-  department: 'HR',
+  department: '人事',
   user_role: 'hr_staff',
   user_id: 'web_user'
 };

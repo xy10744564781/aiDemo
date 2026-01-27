@@ -1,8 +1,10 @@
-import { ref, nextTick, onMounted } from "vue";
-import { PlusOutlined, AppstoreOutlined, ExportOutlined } from "@ant-design/icons-vue";
+import { ref, nextTick, onMounted, computed } from "vue";
+import { PlusOutlined, AppstoreOutlined, SettingOutlined, ExportOutlined } from "@ant-design/icons-vue";
 import { message } from 'ant-design-vue';
-import ToolboxPanel from "../ToolboxPanel/ToolboxPanel.vue";
+import DocumentManager from "../DocumentManager/DocumentManager.vue";
+import SettingsManagement from "../SettingsManagement/SettingsManagement.vue";
 import { queryStream, getChatSessions, createChatSession, addChatMessage, generateChatSessionTitle, exportChatSession } from '@/api';
+import { getCurrentUser } from '@/api/authApi';
 
 export function useChatInterface(emit) {
   // input
@@ -18,6 +20,12 @@ export function useChatInterface(emit) {
   // 多会话存储
   const chatStore = ref([]); // [{ id: string, title: string, messages: [] }]
 
+  // 检查是否为超级管理员
+  const isSuperAdmin = computed(() => {
+    const user = getCurrentUser();
+    return user?.role === 'super_admin';
+  });
+
   function focusInput() {
     inputRef.value?.focus?.();
   }
@@ -25,6 +33,20 @@ export function useChatInterface(emit) {
   function useExample(text) {
     query.value = text;
     nextTick(() => inputRef.value?.focus?.());
+  }
+
+  // 滚动到底部（留出输入框的空间）
+  function scrollToBottom() {
+    nextTick(() => {
+      const rightContent = document.querySelector('.right-content');
+      if (rightContent) {
+        // 滚动到底部，但留出一些空间（不要完全贴到底）
+        rightContent.scrollTo({
+          top: rightContent.scrollHeight - 80,  // 留出80px的空间
+          behavior: 'smooth'
+        });
+      }
+    });
   }
 
   // 加载聊天会话列表
@@ -60,7 +82,10 @@ export function useChatInterface(emit) {
     const chat = chatStore.value[idx];
     messages.value = chat ? chat.messages : [];
     query.value = "";
-    nextTick(() => focusInput());
+    nextTick(() => {
+      focusInput();
+      scrollToBottom();
+    });
     
     // 切换到聊天界面
     emit('switch-to-chat');
@@ -125,6 +150,9 @@ export function useChatInterface(emit) {
     messages.value = chat.messages;
     query.value = "";
 
+    // 滚动到底部显示用户消息
+    nextTick(() => scrollToBottom());
+
     // 保存用户消息到数据库
     try {
       await addChatMessage(sessionId, 'user', text);
@@ -137,6 +165,9 @@ export function useChatInterface(emit) {
     chat.messages.push(aiMessage);
     messages.value = chat.messages;
 
+    // 滚动到底部显示AI消息占位符
+    nextTick(() => scrollToBottom());
+
     isQuerying.value = true;
 
     try {
@@ -146,8 +177,10 @@ export function useChatInterface(emit) {
           aiMessage.text = content;
           // 强制触发响应式更新
           messages.value = [...chat.messages];
-          // 使用 nextTick 确保 DOM 立即更新
-          nextTick();
+          // 使用 nextTick 确保 DOM 立即更新后滚动到底部
+          nextTick(() => {
+            scrollToBottom();
+          });
         },
         onComplete: async () => {
           aiMessage.loading = false;
@@ -224,8 +257,10 @@ export function useChatInterface(emit) {
     // Components
     PlusOutlined,
     AppstoreOutlined,
+    SettingOutlined,
     ExportOutlined,
-    ToolboxPanel,
+    DocumentManager,
+    SettingsManagement,
     // Refs
     inputRef,
     chats,
@@ -235,6 +270,7 @@ export function useChatInterface(emit) {
     chatStore,
     isQuerying,
     isLoading,
+    isSuperAdmin,
     // Methods
     focusInput,
     useExample,

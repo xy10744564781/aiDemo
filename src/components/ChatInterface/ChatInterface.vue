@@ -44,6 +44,14 @@
           <a-typography-text type="secondary">暂无聊天，点击「新聊天」开始</a-typography-text>
         </div>
       </div>
+
+      <!-- 底部设置按钮（仅超级管理员可见） -->
+      <div v-if="isSuperAdmin" class="left-bottom">
+        <a-button type="text" class="settings-btn" @click="$emit('toggle-settings')">
+          <SettingOutlined />
+          <span>设置</span>
+        </a-button>
+      </div>
     </aside>
 
     <!-- Vertical divider -->
@@ -52,7 +60,7 @@
     <!-- Right Content -->
     <main class="right">
       <!-- 聊天内容 -->
-      <div v-if="!showToolbox" class="chat-content">
+      <div v-if="!showToolbox && !showSettings" class="chat-content">
         <!-- 顶部操作栏 -->
         <div v-if="messages.length > 0" class="chat-header">
           <a-button 
@@ -71,7 +79,7 @@
           <div v-if="messages.length === 0" class="empty">
             <div class="welcome">
               <a-typography-title :level="4" class="welcome-title">
-                您好！我是人事知识库AI助手。
+                您好！我是线控知识库AI助手。
               </a-typography-title>
               <a-typography-text type="secondary" class="welcome-tip">
                 请输入您的问题，我会为您提供详细解答。
@@ -98,9 +106,9 @@
                 <a-space wrap :size="[10, 10]" class="examples-row">
                   <a-tag class="chip" @click="useExample('入职流程和要求')">入职流程和要求</a-tag>
                   <a-tag class="chip" @click="useExample('薪资福利政策')">薪资福利政策</a-tag>
-                  <a-tag class="chip" @click="useExample('考勤和请假制度')">考勤和请假制度</a-tag>
-                  <a-tag class="chip" @click="useExample('培训发展机会')">培训发展机会</a-tag>
-                  <a-tag class="chip" @click="useExample('其他人事相关问题')">其他人事相关问题</a-tag>
+                  <a-tag class="chip" @click="useExample('软件出厂要求')">软件出厂要求</a-tag>
+                  <a-tag class="chip" @click="useExample('安全操作')">安全操作</a-tag>
+                  <a-tag class="chip" @click="useExample('其他相关问题')">其他相关问题</a-tag>
                 </a-space>
               </div>
             </div>
@@ -186,7 +194,10 @@
       </div>
 
       <!-- 工具箱内容 -->
-      <ToolboxPanel v-else />
+      <DocumentManager v-else-if="showToolbox" />
+      
+      <!-- 设置界面（仅超级管理员） -->
+      <SettingsManagement v-else-if="showSettings" />
     </main>
   </div>
 </template>
@@ -202,16 +213,26 @@ defineProps({
   showToolbox: {
     type: Boolean,
     default: false
+  },
+  showSettings: {
+    type: Boolean,
+    default: false
+  },
+  currentUser: {
+    type: Object,
+    default: null
   }
 });
 
-const emit = defineEmits(['toggle-toolbox', 'switch-to-chat']);
+const emit = defineEmits(['toggle-toolbox', 'toggle-settings', 'switch-to-chat']);
 
 const {
   PlusOutlined,
   AppstoreOutlined,
+  SettingOutlined,
   ExportOutlined,
-  ToolboxPanel,
+  DocumentManager,
+  SettingsManagement,
   inputRef,
   chats,
   activeIdx,
@@ -219,6 +240,7 @@ const {
   messages,
   isQuerying,
   isLoading,
+  isSuperAdmin,
   focusInput,
   useExample,
   selectChat,

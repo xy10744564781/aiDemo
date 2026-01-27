@@ -1,4 +1,6 @@
 import { API_BASE_URL, API_ENDPOINTS, DEFAULT_USER_CTX } from './config';
+import { getAuthHeaders } from './authApi';
+import { fetchWithAuth } from '../utils/apiInterceptor';
 
 /**
  * 获取文档列表
@@ -6,7 +8,10 @@ import { API_BASE_URL, API_ENDPOINTS, DEFAULT_USER_CTX } from './config';
  */
 export async function getDocuments() {
   try {
-    const response = await fetch(`${API_BASE_URL}${API_ENDPOINTS.DOCUMENTS}`);
+    const response = await fetchWithAuth(`${API_BASE_URL}${API_ENDPOINTS.DOCUMENTS}`, {
+      method: 'GET',
+      headers: getAuthHeaders()
+    });
     
     if (!response.ok) {
       throw new Error(`HTTP ${response.status}: ${response.statusText}`);
@@ -35,8 +40,14 @@ export async function uploadDocument(file, metadata = {}, userCtx = DEFAULT_USER
   formData.append('user_ctx', JSON.stringify(userCtx));
 
   try {
-    const response = await fetch(`${API_BASE_URL}${API_ENDPOINTS.UPLOAD_DOCUMENT}`, {
+    const authHeaders = getAuthHeaders();
+    // 对于FormData，不要设置Content-Type，让浏览器自动设置
+    const headers = { ...authHeaders };
+    delete headers['Content-Type'];
+
+    const response = await fetchWithAuth(`${API_BASE_URL}${API_ENDPOINTS.UPLOAD_DOCUMENT}`, {
       method: 'POST',
+      headers: headers,
       body: formData
     });
 
@@ -58,8 +69,9 @@ export async function uploadDocument(file, metadata = {}, userCtx = DEFAULT_USER
  */
 export async function deleteDocument(documentId) {
   try {
-    const response = await fetch(`${API_BASE_URL}${API_ENDPOINTS.DELETE_DOCUMENT(documentId)}`, {
-      method: 'DELETE'
+    const response = await fetchWithAuth(`${API_BASE_URL}${API_ENDPOINTS.DELETE_DOCUMENT(documentId)}`, {
+      method: 'DELETE',
+      headers: getAuthHeaders()
     });
 
     if (!response.ok) {

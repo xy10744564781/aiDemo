@@ -1,4 +1,6 @@
 import { API_BASE_URL } from './config';
+import { getAuthHeaders } from './authApi';
+import { fetchWithAuth } from '../utils/apiInterceptor';
 
 /**
  * 创建新的聊天会话
@@ -8,11 +10,9 @@ import { API_BASE_URL } from './config';
  */
 export async function createChatSession(title, userId = null) {
   try {
-    const response = await fetch(`${API_BASE_URL}/api/chat-sessions`, {
+    const response = await fetchWithAuth(`${API_BASE_URL}/api/chat-sessions`, {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
+      headers: getAuthHeaders(),
       body: JSON.stringify({
         title,
         user_id: userId
@@ -43,11 +43,9 @@ export async function getChatSessions(userId = null, limit = 50) {
     if (userId) params.append('user_id', userId);
     params.append('limit', limit);
 
-    const response = await fetch(`${API_BASE_URL}/api/chat-sessions?${params}`, {
+    const response = await fetchWithAuth(`${API_BASE_URL}/api/chat-sessions?${params}`, {
       method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-      }
+      headers: getAuthHeaders()
     });
 
     if (!response.ok) {
@@ -69,11 +67,9 @@ export async function getChatSessions(userId = null, limit = 50) {
  */
 export async function getChatSession(sessionId) {
   try {
-    const response = await fetch(`${API_BASE_URL}/api/chat-sessions/${sessionId}`, {
+    const response = await fetchWithAuth(`${API_BASE_URL}/api/chat-sessions/${sessionId}`, {
       method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-      }
+      headers: getAuthHeaders()
     });
 
     if (!response.ok) {
@@ -97,11 +93,9 @@ export async function getChatSession(sessionId) {
  */
 export async function addChatMessage(sessionId, role, content) {
   try {
-    const response = await fetch(`${API_BASE_URL}/api/chat-sessions/${sessionId}/messages`, {
+    const response = await fetchWithAuth(`${API_BASE_URL}/api/chat-sessions/${sessionId}/messages`, {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
+      headers: getAuthHeaders(),
       body: JSON.stringify({
         role,
         content
@@ -128,11 +122,9 @@ export async function addChatMessage(sessionId, role, content) {
  */
 export async function updateChatSessionTitle(sessionId, title) {
   try {
-    const response = await fetch(`${API_BASE_URL}/api/chat-sessions/${sessionId}/title`, {
+    const response = await fetchWithAuth(`${API_BASE_URL}/api/chat-sessions/${sessionId}/title`, {
       method: 'PUT',
-      headers: {
-        'Content-Type': 'application/json',
-      },
+      headers: getAuthHeaders(),
       body: JSON.stringify({
         title
       })
@@ -157,11 +149,9 @@ export async function updateChatSessionTitle(sessionId, title) {
  */
 export async function deleteChatSession(sessionId) {
   try {
-    const response = await fetch(`${API_BASE_URL}/api/chat-sessions/${sessionId}`, {
+    const response = await fetchWithAuth(`${API_BASE_URL}/api/chat-sessions/${sessionId}`, {
       method: 'DELETE',
-      headers: {
-        'Content-Type': 'application/json',
-      }
+      headers: getAuthHeaders()
     });
 
     if (!response.ok) {
@@ -183,11 +173,9 @@ export async function deleteChatSession(sessionId) {
  */
 export async function generateChatSessionTitle(sessionId) {
   try {
-    const response = await fetch(`${API_BASE_URL}/api/chat-sessions/${sessionId}/generate-title`, {
+    const response = await fetchWithAuth(`${API_BASE_URL}/api/chat-sessions/${sessionId}/generate-title`, {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      }
+      headers: getAuthHeaders()
     });
 
     if (!response.ok) {
@@ -208,8 +196,15 @@ export async function generateChatSessionTitle(sessionId) {
  */
 export async function exportChatSession(sessionId) {
   try {
-    const response = await fetch(`${API_BASE_URL}/api/chat-sessions/${sessionId}/export`, {
+    const token = localStorage.getItem('token');
+    const headers = {};
+    if (token) {
+      headers['Authorization'] = `Bearer ${token}`;
+    }
+
+    const response = await fetchWithAuth(`${API_BASE_URL}/api/chat-sessions/${sessionId}/export`, {
       method: 'GET',
+      headers
     });
 
     if (!response.ok) {
