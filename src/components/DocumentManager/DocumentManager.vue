@@ -280,7 +280,7 @@ export default {
       try {
         const docs = await getDocuments();
         documents.value = docs || [];
-        message.success('文档列表刷新成功');
+        // message.success('文档列表刷新成功');
       } catch (error) {
         console.error('获取文档列表失败:', error);
         message.error('获取文档列表失败');

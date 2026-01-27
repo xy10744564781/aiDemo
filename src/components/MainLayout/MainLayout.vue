@@ -1,35 +1,38 @@
 <template>
   <div class="app-shell">
-    <!-- 未登录状态：显示登录/注册表单 -->
-    <div v-if="!isAuthenticated" class="auth-container">
-      <LoginForm 
-        v-if="showLogin"
-        @login-success="handleLoginSuccess"
-        @switch-to-register="switchToRegister"
-      />
-      <RegisterForm 
-        v-else
-        @register-success="handleRegisterSuccess"
-        @switch-to-login="switchToLogin"
-      />
-    </div>
-    
     <!-- 已登录状态：显示主应用界面 -->
-    <div v-else class="app-frame">
+    <div class="app-frame">
       <!-- 用户信息栏 -->
       <div class="user-header">
         <div class="user-info">
-          <span class="welcome-text">欢迎，{{ currentUser?.username }}</span>
+          <a-dropdown>
+            <a class="ant-dropdown-link" @click.prevent>
+                <span class="welcome-text" style="cursor: pointer;">欢迎，{{ currentUser?.username }}</span>
+            </a>
+            <template #overlay>
+              <a-menu>
+                <a-menu-item @click="toggleSettings" v-if="currentUser?.role === 'super_admin'">
+                  <a >系统设置</a>
+                </a-menu-item>
+                <a-menu-item @click="handleLogout">
+                  <a >退出登录</a>
+                </a-menu-item>
+              </a-menu>
+            </template>
+          </a-dropdown>
           <span v-if="currentUser?.role !== 'super_admin'" class="department-text">{{ currentUser?.department }}部门</span>
           <a-tag v-if="currentUser?.role === 'admin'" color="orange">部门管理员</a-tag>
           <a-tag v-else-if="currentUser?.role === 'super_admin'" color="red">超级管理员</a-tag>
         </div>
         <div class="user-actions">
-          <a-button type="text" @click="handleLogout">
-            <template #icon>
-              <LogoutOutlined />
-            </template>
-            退出登录
+          <a-button 
+            type="text" 
+            class="export-btn"
+            @click="exportCurrentSession"
+            :title="'导出聊天记录'"
+          >
+            <ExportOutlined />
+            <span>导出</span>
           </a-button>
         </div>
       </div>
@@ -42,32 +45,32 @@
         @toggle-toolbox="toggleToolbox"
         @toggle-settings="toggleSettings"
         @switch-to-chat="switchToChat"
+        ref="chatInterfaceRef"
       />
     </div>
   </div>
 </template>
 
 <script setup>
-import { LogoutOutlined } from '@ant-design/icons-vue';
+// import { LogoutOutlined } from '@ant-design/icons-vue';
 import { useMainLayout } from './MainLayout.js';
 import './MainLayout.css';
+import { ExportOutlined } from "@ant-design/icons-vue";
+import { ref } from "vue";
+const chatInterfaceRef = ref(null);
+
+function exportCurrentSession(){
+  chatInterfaceRef.value.exportCurrentSession();
+}
 
 const {
   ChatInterface,
-  LoginForm,
-  RegisterForm,
   showToolbox,
   showSettings,
-  isAuthenticated,
   currentUser,
-  showLogin,
   toggleToolbox,
   toggleSettings,
   switchToChat,
-  handleLoginSuccess,
-  handleRegisterSuccess,
   handleLogout,
-  switchToLogin,
-  switchToRegister
 } = useMainLayout();
 </script>

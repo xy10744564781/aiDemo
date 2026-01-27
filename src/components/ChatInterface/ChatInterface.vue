@@ -46,12 +46,12 @@
       </div>
 
       <!-- 底部设置按钮（仅超级管理员可见） -->
-      <div v-if="isSuperAdmin" class="left-bottom">
+      <!-- <div v-if="isSuperAdmin" class="left-bottom">
         <a-button type="text" class="settings-btn" @click="$emit('toggle-settings')">
           <SettingOutlined />
           <span>设置</span>
         </a-button>
-      </div>
+      </div> -->
     </aside>
 
     <!-- Vertical divider -->
@@ -62,7 +62,7 @@
       <!-- 聊天内容 -->
       <div v-if="!showToolbox && !showSettings" class="chat-content">
         <!-- 顶部操作栏 -->
-        <div v-if="messages.length > 0" class="chat-header">
+        <!-- <div v-if="messages.length > 0" class="chat-header">
           <a-button 
             type="text" 
             class="export-btn"
@@ -72,7 +72,7 @@
             <ExportOutlined />
             <span>导出</span>
           </a-button>
-        </div>
+        </div> -->
 
         <div class="right-content">
           <!-- Empty state -->
@@ -229,8 +229,6 @@ const emit = defineEmits(['toggle-toolbox', 'toggle-settings', 'switch-to-chat']
 const {
   PlusOutlined,
   AppstoreOutlined,
-  SettingOutlined,
-  ExportOutlined,
   DocumentManager,
   SettingsManagement,
   inputRef,
@@ -240,7 +238,6 @@ const {
   messages,
   isQuerying,
   isLoading,
-  isSuperAdmin,
   focusInput,
   useExample,
   selectChat,
@@ -253,4 +250,9 @@ const {
 function parseMessage(text) {
   return parseAIResponse(text);
 }
+
+defineExpose({
+  exportCurrentSession
+});
+
 </script>

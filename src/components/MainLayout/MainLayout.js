@@ -4,13 +4,16 @@ import LoginForm from "../Auth/LoginForm.vue";
 import RegisterForm from "../Auth/RegisterForm.vue";
 import { isLoggedIn, logoutUser, getCurrentUser } from "../../api/authApi";
 import { setLogoutCallback } from "../../utils/apiInterceptor";
+import { useRouter } from "vue-router";
 
 export function useMainLayout() {
+  const router = useRouter();
   const showToolbox = ref(false);
   const showSettings = ref(false);
   const isAuthenticated = ref(false);
   const currentUser = ref(null);
   const showLogin = ref(true); // true: 显示登录, false: 显示注册
+  
 
   // 检查用户登录状态
   function checkAuthStatus() {
@@ -42,9 +45,13 @@ export function useMainLayout() {
   async function handleLogout() {
     try {
       await logoutUser();
-      isAuthenticated.value = false;
-      currentUser.value = null;
-      showLogin.value = true; // 切换到登录表单
+      // isAuthenticated.value = false;
+      // currentUser.value = null;
+      // showLogin.value = true; // 切换到登录表单
+      console.log(router);
+
+      router.push('/LoginForm');
+
     } catch (error) {
       console.error('登出失败:', error);
     }
@@ -82,6 +89,8 @@ export function useMainLayout() {
     showSettings.value = false;
   }
 
+
+
   // 组件挂载时检查登录状态并注册登出回调
   onMounted(() => {
     checkAuthStatus();
@@ -109,6 +118,6 @@ export function useMainLayout() {
     handleLogout,
     switchToLogin,
     switchToRegister,
-    checkAuthStatus
+    checkAuthStatus,
   };
 }

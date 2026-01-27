@@ -99,7 +99,8 @@
       
       <div class="register-footer">
         <span>已有账户？</span>
-        <a @click="$emit('switch-to-login')">立即登录</a>
+        <!-- <a @click="$emit('switch-to-login')">立即登录</a> -->
+        <a @click="router.push('/LoginForm')">立即登录</a>
       </div>
     </div>
   </div>
@@ -107,11 +108,15 @@
 
 <script setup>
 import { ref, reactive, onMounted } from 'vue'
+import { useRouter } from 'vue-router'
 import { message } from 'ant-design-vue'
 import { UserOutlined, LockOutlined, MailOutlined } from '@ant-design/icons-vue'
 import { registerUser, getDepartments } from '../../api/authApi'
 
-const emit = defineEmits(['register-success', 'switch-to-login'])
+// 使用 useRouter 来获取路由实例
+const router = useRouter()
+
+// const emit = defineEmits(['register-success', 'switch-to-login'])
 
 const loading = ref(false)
 const departmentsLoading = ref(false)
@@ -181,7 +186,9 @@ const handleRegister = async (values) => {
     localStorage.setItem('user', JSON.stringify(response.user))
     
     message.success('注册成功')
-    emit('register-success', response.user)
+    // emit('register-success', response.user)
+    // 注册成功后，跳转到登录页面
+    router.push('/')
     
   } catch (error) {
     console.error('注册失败:', error)

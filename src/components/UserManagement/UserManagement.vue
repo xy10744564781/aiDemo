@@ -159,7 +159,7 @@ export default {
         const data = await getAllUsers();
         users.value = data.users;
         roles.value = data.roles; // 保存角色列表
-        message.success('用户列表刷新成功');
+        // message.success('用户列表刷新成功');
       } catch (error) {
         console.error('获取用户列表失败:', error);
         message.error('获取用户列表失败');
